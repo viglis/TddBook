@@ -6,6 +6,19 @@ class PasswordStrengthMeter {
             return PasswordStrength.NORMAL
         }
 
+        if (!meetsContainingNumberCriteria(s)) {
+            return PasswordStrength.NORMAL
+        }
+
         return PasswordStrength.STRONG
+    }
+
+    private fun meetsContainingNumberCriteria(s: String): Boolean {
+        for (ch in s) {
+            if (ch in '0'..'9') {
+                return true
+            }
+        }
+        return false
     }
 }

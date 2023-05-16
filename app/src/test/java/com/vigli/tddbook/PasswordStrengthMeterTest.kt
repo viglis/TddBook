@@ -23,4 +23,11 @@ class PasswordStrengthMeterTest {
         val result2 = meter.meter("Ab12!c")
         assertEquals(PasswordStrength.NORMAL, result2)
     }
+
+    @Test
+    fun meetsOtherCriteria_except_for_number_Then_Normal() {
+        val meter = PasswordStrengthMeter()
+        val result = meter.meter("ab!@ABqwer")
+        assertEquals(PasswordStrength.NORMAL, result)
+    }
 }
