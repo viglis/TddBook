@@ -15,13 +15,36 @@ class PasswordStrengthMeterTest {
     @Test
     fun meetsOtherCriteria_except_for_Length_Then_Normal() {
         assertStrength("Ab12!c", PasswordStrength.NORMAL)
-
-        assertStrength("Ab!cdef", PasswordStrength.NORMAL)
     }
 
     @Test
     fun meetsOtherCriteria_except_for_number_Then_Normal() {
         assertStrength("ab!@ABqwer", PasswordStrength.NORMAL)
+    }
+
+    @Test
+    fun emptyInput_Then_Invalid() {
+        assertStrength("", PasswordStrength.INVALID)
+    }
+
+    @Test
+    fun meetsOtherCriteria_except_for_Uppercase_Then_Normal() {
+        assertStrength("ab12!@df", PasswordStrength.NORMAL)
+    }
+
+    @Test
+    fun meetsOnlyLengthCriteria_Then_Normal() {
+        assertStrength("abdefghi", PasswordStrength.WEAK)
+    }
+
+    @Test
+    fun meetsOnlyNumCriteria_Then_Normal() {
+        assertStrength("12345", PasswordStrength.WEAK)
+    }
+
+    @Test
+    fun meetsOnlyUpperCriteria_Then_Normal() {
+        assertStrength("ABZEF", PasswordStrength.WEAK)
     }
 
     private fun assertStrength(password: String, expStr: PasswordStrength) {
