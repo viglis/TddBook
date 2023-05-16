@@ -6,6 +6,19 @@ class PasswordStrengthMeter {
             return PasswordStrength.INVALID
         }
 
+        val metCounts = getMetCriteriaCounts(s)
+
+        if (metCounts <= 1) {
+            return PasswordStrength.WEAK
+        }
+        if (metCounts == 2) {
+            return PasswordStrength.NORMAL
+        }
+
+        return PasswordStrength.STRONG
+    }
+
+    private fun getMetCriteriaCounts(s: String): Int {
         var metCounts = 0
         if (s.length >= 8) {
             metCounts++
@@ -16,15 +29,7 @@ class PasswordStrengthMeter {
         if (meetsContainingUppercaseCriteria(s)) {
             metCounts++
         }
-
-        if (metCounts <= 1) {
-            return PasswordStrength.WEAK
-        }
-        if (metCounts == 2) {
-            return PasswordStrength.NORMAL
-        }
-
-        return PasswordStrength.STRONG
+        return metCounts
     }
 
     private fun meetsContainingUppercaseCriteria(s: String): Boolean {
