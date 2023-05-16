@@ -47,6 +47,11 @@ class PasswordStrengthMeterTest {
         assertStrength("ABZEF", PasswordStrength.WEAK)
     }
 
+    @Test
+    fun meetsNoCriteria_Then_Weak() {
+        assertStrength("abc", PasswordStrength.WEAK)
+    }
+
     private fun assertStrength(password: String, expStr: PasswordStrength) {
         val result = sut.meter(password)
         assertEquals(expStr, result)
