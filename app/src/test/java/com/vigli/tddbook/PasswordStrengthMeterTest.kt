@@ -4,30 +4,28 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 class PasswordStrengthMeterTest {
+    private val sut = PasswordStrengthMeter()
     @Test
     fun meetsAllCriteria_Then_Strong() {
-        val meter = PasswordStrengthMeter()
-        val result = meter.meter("ab12!@AB")
-        assertEquals(PasswordStrength.STRONG, result)
+        assertStrength("ab12!@AB", PasswordStrength.STRONG)
 
-        val result2 = meter.meter("abc1!Add")
-        assertEquals(PasswordStrength.STRONG, result2)
+        assertStrength("abc1!Add", PasswordStrength.STRONG)
     }
 
     @Test
     fun meetsOtherCriteria_except_for_Length_Then_Normal() {
-        val meter = PasswordStrengthMeter()
-        val result = meter.meter("ab12!@A")
-        assertEquals(PasswordStrength.NORMAL, result)
+        assertStrength("Ab12!c", PasswordStrength.NORMAL)
 
-        val result2 = meter.meter("Ab12!c")
-        assertEquals(PasswordStrength.NORMAL, result2)
+        assertStrength("Ab!cdef", PasswordStrength.NORMAL)
     }
 
     @Test
     fun meetsOtherCriteria_except_for_number_Then_Normal() {
-        val meter = PasswordStrengthMeter()
-        val result = meter.meter("ab!@ABqwer")
-        assertEquals(PasswordStrength.NORMAL, result)
+        assertStrength("ab!@ABqwer", PasswordStrength.NORMAL)
+    }
+
+    private fun assertStrength(password: String, expStr: PasswordStrength) {
+        val result = sut.meter(password)
+        assertEquals(expStr, result)
     }
 }
