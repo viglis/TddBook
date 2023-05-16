@@ -6,29 +6,21 @@ class PasswordStrengthMeter {
             return PasswordStrength.INVALID
         }
 
-        val lengthEnough = s.length >= 8
-        val containsNum = meetsContainingNumberCriteria(s)
-        val containsUppercase = meetsContainingUppercaseCriteria(s)
-
-        if (lengthEnough && !containsNum && !containsUppercase) {
+        var metCounts = 0
+        if (s.length >= 8) {
+            metCounts++
+        }
+        if (meetsContainingNumberCriteria(s)) {
+            metCounts++
+        }
+        if (meetsContainingUppercaseCriteria(s)) {
+            metCounts++
+        }
+        
+        if (metCounts == 1) {
             return PasswordStrength.WEAK
         }
-        if (!lengthEnough && containsNum && !containsUppercase) {
-            return PasswordStrength.WEAK
-        }
-        if (!lengthEnough && !containsNum && containsUppercase) {
-            return PasswordStrength.WEAK
-        }
-
-        if (!lengthEnough) {
-            return PasswordStrength.NORMAL
-        }
-
-        if (!containsNum) {
-            return PasswordStrength.NORMAL
-        }
-
-        if (!containsUppercase) {
+        if (metCounts == 2) {
             return PasswordStrength.NORMAL
         }
 
