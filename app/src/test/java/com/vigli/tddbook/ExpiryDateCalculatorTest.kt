@@ -7,19 +7,22 @@ import java.time.LocalDate
 class ExpiryDateCalculatorTest {
     @Test
     fun `만원 납부하면 한달 뒤가 만료일이 됨`() {
-        val billingDate = LocalDate.of(2019, 3, 1)
-        val payAmount = 10_000
+        assertExpiryDate(
+            LocalDate.of(2019, 3, 1),
+            10_000,
+            LocalDate.of(2019, 4, 1)
+        )
 
-        val expiryDate = ExpiryDateCalculator().calculateExpiryDate(billingDate, payAmount)
+        assertExpiryDate(
+            LocalDate.of(2019, 5, 5),
+            10_000,
+            LocalDate.of(2019, 6, 5)
+        )
+    }
 
-        assertEquals(LocalDate.of(2019, 4, 1), expiryDate)
-
-        val billingDate2 = LocalDate.of(2019, 5, 5)
-        val payAmount2 = 10_000
-
-        val expiryDate2 = ExpiryDateCalculator().calculateExpiryDate(billingDate2, payAmount2)
-
-        assertEquals(LocalDate.of(2019, 6, 5), expiryDate2)
+    private fun assertExpiryDate(billingDate: LocalDate, payAmount: Int, expectedExpiryDate: LocalDate) {
+        val realExpiryDate = ExpiryDateCalculator().calculateExpiryDate(billingDate, payAmount)
+        assertEquals(expectedExpiryDate, realExpiryDate)
     }
 }
 
