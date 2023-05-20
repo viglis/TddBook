@@ -51,6 +51,33 @@ class ExpiryDateCalculatorTest {
         )
     }
 
+    @Test
+    fun `첫 납부일과 만료이 일자가 다를때 만원 납부`() {
+        val payData = PayData(
+            firstBillingDate = LocalDate.of(2019, 1, 31),
+            billingDate = LocalDate.of(2019, 2, 28),
+            payAmount = 10_000
+        )
+
+        assertExpiryDate(payData, LocalDate.of(2019, 3, 31))
+
+        val payData2 = PayData(
+            firstBillingDate = LocalDate.of(2019, 1, 30),
+            billingDate = LocalDate.of(2019, 2, 28),
+            payAmount = 10_000
+        )
+
+        assertExpiryDate(payData2, LocalDate.of(2019, 3, 30))
+
+        val payData3 = PayData(
+            firstBillingDate = LocalDate.of(2019, 5, 31),
+            billingDate = LocalDate.of(2019, 6, 30),
+            payAmount = 10_000
+        )
+
+        assertExpiryDate(payData3, LocalDate.of(2019, 7, 31))
+    }
+
     private fun assertExpiryDate(payData: PayData, expectedExpiryDate: LocalDate) {
         val realExpiryDate = ExpiryDateCalculator().calculateExpiryDate(payData)
         assertEquals(expectedExpiryDate, realExpiryDate)
@@ -59,19 +86,25 @@ class ExpiryDateCalculatorTest {
 
 class ExpiryDateCalculator {
     fun calculateExpiryDate(payData: PayData): LocalDate {
-        return payData.getBillingDate().plusMonths(1)
+        if (payData.firstBillingDate == null) {
+            return payData.billingDate.plusMonths(1)
+        }
+
+        val candidateExp = payData.billingDate.plusMonths(1)
+        return if (payData.firstBillingDate.dayOfMonth != candidateExp.dayOfMonth) {
+            val dayLenOfCandiMon = candidateExp.lengthOfMonth()
+            candidateExp.withDayOfMonth(
+                payData.firstBillingDate.dayOfMonth.coerceAtMost(dayLenOfCandiMon)
+            )
+        } else {
+            candidateExp
+        }
     }
 }
 
 data class PayData(
-    private val billingDate: LocalDate,
-    private val payAmount: Int
+    val firstBillingDate: LocalDate? = null,
+    val billingDate: LocalDate,
+    val payAmount: Int
 ) {
-    fun getBillingDate(): LocalDate {
-        return billingDate
-    }
-
-    fun getPayAmount(): Int {
-        return payAmount
-    }
 }
