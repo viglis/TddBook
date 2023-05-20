@@ -13,11 +13,18 @@ class ExpiryDateCalculatorTest {
         val expiryDate = ExpiryDateCalculator().calculateExpiryDate(billingDate, payAmount)
 
         assertEquals(LocalDate.of(2019, 4, 1), expiryDate)
+
+        val billingDate2 = LocalDate.of(2019, 5, 5)
+        val payAmount2 = 10_000
+
+        val expiryDate2 = ExpiryDateCalculator().calculateExpiryDate(billingDate2, payAmount2)
+
+        assertEquals(LocalDate.of(2019, 6, 5), expiryDate2)
     }
 }
 
 class ExpiryDateCalculator {
     fun calculateExpiryDate(billingDate: LocalDate, payAmount: Int): LocalDate {
-        return LocalDate.of(2019, 4, 1)
+        return billingDate.plusMonths(1)
     }
 }
